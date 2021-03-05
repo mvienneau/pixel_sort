@@ -13,4 +13,5 @@ To use, simply edit the code to change the `img = Image.open("YOURFILE_HERE.jpg"
 ## TODO
 - Unit tests to ensure the code is actually doing what I think
 - Break out more of the functions into separate files
-- Add more waays to sort and bucket 
+- Re-write the sorting/bucketing code to be cleaner and clearer
+- Add more ways to sort and bucket 
