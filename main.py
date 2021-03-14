@@ -1,16 +1,20 @@
+import argparse
 from PIL import Image
 from collections import defaultdict
 
-from group import group_columns, compare_bands
-from sort import flatten, sort_groupings
+import group, sort
 
-THRESHOLD = 25
+SORT_FUNCS = {
+    'RED': lambda x: x[0],
+    'GREEN': lambda x: x[1],
+    'BLUE': lambda x: x[2],
+    'INTENSITY': lambda x: sum(x)
+}
 
-SORT_RED = lambda x: x[0]
-SORT_GREEN = lambda x: x[1]
-SORT_BLUE = lambda x: x[2]
-
-SORT_INTENSITY = lambda x: x[0] + x[1] + x[2]
+INTERVAL_FUNCS = {
+    'BANDS': group.compare_bands,
+    'INTENSITY': group.compare_intensity
+}
 
 def create_columns(img):
     columns = []
@@ -24,19 +28,30 @@ def create_columns(img):
         
 
 if __name__ == "__main__":
-    fp = "test.jpg"
-    img = Image.open(fp)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--image", required=True, help="filepath of the image")
+    parser.add_argument("--sort_func", default="INTENSITY", help="sort type [RED | GREEN | BLUE | INTENSITY]")
+    parser.add_argument("--threshold", default="75", type=int, help="threshold level for comparing two pixels when making intervals")
+    parser.add_argument("--interval_func", default="INTENSITY", help="which kernel to decide intervals [BANDS | INTENSITY]")
+    args = parser.parse_args()
 
+    fp = args.image
+    img = Image.open(fp)
     img.show()
 
     columns = create_columns(img)
+
+    interval_func = INTERVAL_FUNCS[args.interval_func]
+    threshold = args.threshold
     
-    col_groupings = group_columns(columns, compare_bands)
+    sort_func = SORT_FUNCS[args.sort_func]
+    
+    col_groupings = group.group_columns(columns, interval_func, threshold)
     sorted_col_groupings = []
     for groupings in col_groupings:
-        sorted_col_groupings.append(sort_groupings(groupings, SORT_INTENSITY))
+        sorted_col_groupings.append(sort.sort_groupings(groupings, sort_func))
     
-    sorted_cols = [flatten(groupings) for groupings in sorted_col_groupings]
+    sorted_cols = [sort.flatten(groupings) for groupings in sorted_col_groupings]
     for x in range(img.width):
         for y in range(img.height):
             sort_pixel = sorted_cols[x][y]
@@ -44,11 +59,4 @@ if __name__ == "__main__":
     
 
     img.show()
-
-
     
-
-
-
-
-        

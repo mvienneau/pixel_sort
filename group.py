@@ -9,9 +9,8 @@ from collections import defaultdict
 #           ex: d for d = {0: [p1, p2, p3], 1: [p5, p6, p7]}
 # 
 
+THRESHOLD = 75
 
-
-THRESHOLD = 25
 '''
 compare_bands takes two pixels, and compares them bassed strictly on a difference in color bands (RGB)
 :param p1: first pixel
@@ -28,6 +27,10 @@ def compare_bands(p1, p2, threshold=THRESHOLD):
         return 1
     return 0
 
+def compare_intensity(p1, p2, threshold=THRESHOLD):
+    if abs(sum(p1) - sum(p2)) > threshold:
+        return 1
+    return 0
 
 '''
 group_column takes a column and a function and returns the groups of pixels specifyed by the function
@@ -35,12 +38,12 @@ group_column takes a column and a function and returns the groups of pixels spec
 :param fn: a function that takes two pixels, and returns 1 if they differ, 0 if they are 'similar'
 :return: a dictionary of {group: [pixels]}
 '''
-def group_column(column, fn):
+def group_column(column, fn, threshold=THRESHOLD):
     buckets = defaultdict(list)
     group = 0
     for pixel in column:
         # if there is a previous pixel in the group, and they differ
-        if buckets[group] and fn(pixel, buckets[group][-1]):
+        if buckets[group] and fn(pixel, buckets[group][-1], threshold):
             group = group + 1 # create a new group
         buckets[group].append(pixel)
     return buckets
@@ -51,10 +54,10 @@ group_columns takes a list of columns and a function and returns the groups of p
 :param fn: a function that takes two pixels, and returns 1 if they differ, 0 if they are 'similar'
 :return: a list of a dictionary of [{group: [pixels]}]
 '''
-def group_columns(columns, fn):
+def group_columns(columns, fn, threshold=THRESHOLD):
     grouped_cols = []
     for column in columns:
-        grouped_cols.append(group_column(column, fn))
+        grouped_cols.append(group_column(column, fn, threshold))
     
     return grouped_cols
 
