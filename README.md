@@ -34,3 +34,4 @@ Most of the time is spent breaking down the image into an array of pixels, and r
 - ~~Break out more of the functions into separate files~~
 - ~~Re-write the sorting/bucketing code to be cleaner and clearer~~
 - Add more ways to sort and bucket 
+- Add more CLI options (threshold, pixel color interval, etc)
