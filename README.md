@@ -8,8 +8,8 @@ https://aescripts.com/ae-pixel-sorter/
 A scrappy attempt at creating something that sorts pixels in a certain 'interval' based on intensity, color band, etc.
 
 ## Examples
-![Original Image](examples/original.png)
-![Pixel Sorted](examples/mod.png)
+![Original Image](examples/original.PNG)
+![Pixel Sorted](examples/mod.PNG)
 
 ## Use
 To use, simply edit the code to change the `img = Image.open("YOURFILE_HERE.jpg")` to point to any photo. Then run `python main.py`. Requires the python package `Pillow`
